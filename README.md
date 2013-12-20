@@ -8,4 +8,3 @@ twitter-1.10.2
 Dependencies:
 python-mysqldb
 
-Included is a SQL file containing the table structure I've used so far
