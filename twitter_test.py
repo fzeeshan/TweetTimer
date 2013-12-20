@@ -13,21 +13,25 @@ x = t.search.tweets(q=searchHash, count=searchCount)
 tweets = x['statuses']
 
 for tweet in tweets:
-    twitterID = tweet['id']
-    twitterProImg = tweet['user']['profile_image_url']
-    twitterScreenName = tweet['user']['screen_name']
-    twitterUserName = tweet['user']['name'].encode('utf8')
-    twitterCreated = tweet['created_at']
-    twitterText = tweet['text'].encode('utf8')
-    twitterRecount = tweet['retweet_count']
-    cur.execute("INSERT IGNORE INTO tweets (twitterID, hashTag, userImage, userScreenName, userName, createdTime, tweetText, reTweet) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)",(twitterID, twitterProImg, searchHash, twitterScreenName, twitterUserName, twitterCreated, twitterText, twitterRecount))
-    print str(twitterID)
-    print twitterProImg
-    print twitterScreenName,
-    print "("+twitterUserName+")"
-    print twitterCreated
-    print twitterText
-    print "RT: " + str(twitterRecount)
+    tweetID = tweet['id']
+    tweetCreated = tweet['created_at']
+    tweetText = tweet['text'].encode('utf8')
+    tweetRecount = tweet['retweet_count']
+
+    userID = tweet['user']['id']
+    userImage = tweet['user']['profile_image_url']
+    userScreenName = tweet['user']['screen_name']
+    userRealName = tweet['user']['name'].encode('utf8')
+
+    cur.execute("INSERT IGNORE INTO Tweets (tweetID, hashTag, userID, createdTime, tweetText, reTweet) VALUES(%s, %s, %s, %s, %s, %s)",(tweetID, searchHash, userID, tweetCreated, tweetText, tweetRecount))
+    cur.execute("INSERT IGNORE INTO Users (userID, userImage, userScreenName, userRealName) VALUES(%s, %s, %s, %s)",(userID, userImage, userScreenName, userRealName))
+    print "tweetID: "+str(tweetID)
+    print userScreenName,
+    print "("+userRealName+")- ",
+    print str(userID)
+    print tweetCreated
+    print tweetText
+    print "RT: " + str(tweetRecount)
     print "--------------------------------------------------------------------"
 db.commit()
 db.close()
