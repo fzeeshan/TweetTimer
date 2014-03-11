@@ -9,7 +9,7 @@ cur = db.cursor()
 cur.execute("SELECT tweetText, tweetIndex FROM Tweets")
 counts = {}
 cleanup = []  
-removals = ["#", "@", "!", "/", ",", "\\", "-", "'", "$", "*", "&", "%", "http", "I", "and", "but", "for", "if", ";)", "[", "]", "my", "to", "q", "o", "that", "the", "with", "a", "do"]
+removals = ["#", "@", "!", "/", ",", "\\", "-", "'", "$", "*", "&", "%", "http", "I", "but", "for", "if", ";)", "[", "]", "my", "to", "q", "o", "that", "the", "with", "a", "do"]
 
 for row in cur.fetchall():
 	for word in row[0].split():
