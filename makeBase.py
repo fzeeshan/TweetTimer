@@ -1,33 +1,40 @@
-#must update makeBase SQL struct
-
 import MySQLdb
 import keyring
 
-db = MySQLdb.connect(host=keyring.db_host, user=keyring.db_user, passwd=keyring.db_pass, db=keyring.db_name)
+db = MySQLdb.connect(host=keyring.db_host, user=keyring.db_user, passwd=keyring.db_pass)
 cur = db.cursor()
 
-cur.execute("SELECT tweetText, tweetIndex FROM Tweets")
-counts = {}
-cleanup = []  
-removals = ["#", "@", "!", "/", ",", "\\", "-", "'", "$", "*", "&", "%", "http", "I", "but", "for", "if", ";)", "[", "]", "my", "to", "q", "o", "that", "the", "with", "a", "do"]
+#Enter SQL Stmt
+cur.execute("""
+	CREATE DATABASE HT_Nerd;
+	USE HT_Nerd;
 
-for row in cur.fetchall():
-	for word in row[0].split():
-	    if  word not in counts:
-	            counts[word] = [0, ""]
-	    counts[word][0] = counts[word][0] + 1
-	    counts[word][1] += str(row[1])+"," 
-  
-for itm in counts:
-	check = itm
-	for rems in removals:
-		if check[0:len(rems)].lower() == rems.lower():
-			cleanup.append(check)
+	CREATE TABLE Tweets
+	(
+		tweetIndex int AUTO_INCREMENT PRIMARY KEY,
+		tweetID bigint(255) UNIQUE,
+		hashTag varchar(100),
+		userID bigint(255), 
+		createdTime datetime,
+		tweetText varchar(200), 
+		reTweet int
+	);
 
-for itm in cleanup:
-	counts.pop(itm)
+	CREATE TABLE Users
+	(
+		userIndex int AUTO_INCREMENT PRIMARY KEY,
+	 	userID bigint(255),
+	 	userImage varchar(500), 
+	 	userScreenName varchar(200),
+	 	userRealName varchar(200)
+	 );
 
-for itm in counts:
-	cur.execute("INSERT INTO TweetText (wordMaster, wordCount, tweetRefID) VALUES(%s, %s, %s)",(itm, counts[itm][0], counts[itm][1]))
-db.commit()
-db.close()
+	CREATE TABLE TweetText
+	(
+		wordIndex int AUTO_INCREMENT PRIMARY KEY,
+		wordMaster varchar(200),
+		wordCount int,
+		tweetRefID int
+	);
+
+""")
